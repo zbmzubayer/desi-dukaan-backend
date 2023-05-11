@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Res,
   UploadedFile,
   UseInterceptors,
   ValidationPipe,
@@ -51,5 +52,10 @@ export class CustomerController {
   @Delete('/delete/:uuid')
   delete(@Param('uuid', ParseUUIDPipe) uuid: string) {
     this.customerService.delete(uuid);
+  }
+  // Get Photo
+  @Get('/photo/:filename')
+  getImage(@Param('filename') filename, @Res() res) {
+    res.sendFile(filename, { root: './uploads' });
   }
 }
