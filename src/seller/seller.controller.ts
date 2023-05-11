@@ -1,9 +1,23 @@
-import { Body, Controller, Delete, Get, Param, ParseUUIDPipe, Post, Put, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+  ValidationPipe,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { saveUploadedFile } from 'helper/saveUploadedFile';
 import { CreateSellerDTO } from './dto/create-seller.dto';
 import { UpdateSellerDTO } from './dto/update-seller.dto';
 import { SellerService } from './seller.service';
 
-@Controller('seller')
+@Controller('api/seller')
 export class SellerController {
   constructor(private sellerService: SellerService) {}
   // CRUD
@@ -20,8 +34,19 @@ export class SellerController {
     return this.sellerService.getByUuid(uuid);
   }
   @Put('/update/:uuid')
-  update(@Param('uuid', ParseUUIDPipe) uuid: string, @Body(ValidationPipe) sellerDto: UpdateSellerDTO) {
-    return this.sellerService.update(uuid, sellerDto);
+  @UseInterceptors(FileInterceptor('Photo', saveUploadedFile))
+  update(
+    @Param('uuid', ParseUUIDPipe) uuid: string,
+    @Body(ValidationPipe) sellerDto: UpdateSellerDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      sellerDto.Photo = null;
+      return this.sellerService.update(uuid, sellerDto);
+    } else {
+      sellerDto.Photo = file.filename;
+      return this.sellerService.update(uuid, sellerDto);
+    }
   }
   @Delete('/delete/:uuid')
   delete(@Param('uuid', ParseUUIDPipe) uuid: string) {

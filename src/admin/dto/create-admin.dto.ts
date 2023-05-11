@@ -1,9 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class UpdateSellerDTO {
-  Photo: string;
+export class CreateAdminDTO {
   @IsNotEmpty()
   Name: string;
+  @IsNotEmpty()
+  Email: string;
   @IsNotEmpty()
   Phone: string;
   @IsNotEmpty()
@@ -11,8 +12,7 @@ export class UpdateSellerDTO {
   @IsNotEmpty()
   Gender: string;
   @IsNotEmpty()
-  Address: string;
-  CompanyName: string;
-  CompanyLogo: string;
+  Password: string;
+  CreatedAt: Date;
   ModifiedAt: Date;
 }
