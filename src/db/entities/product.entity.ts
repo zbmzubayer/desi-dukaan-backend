@@ -13,6 +13,9 @@ export class Product {
   @Generated('uuid')
   Uuid: string;
 
+  @Column({ nullable: true })
+  Photo: string;
+
   @Column()
   Name: string;
 
