@@ -25,7 +25,7 @@ export class Order {
   @Column()
   PlacedAt: Date;
 
-  @Column()
+  @Column({ nullable: true })
   DeliveredAt: Date;
 
   // Order has one OrderDetail
