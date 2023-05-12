@@ -7,12 +7,13 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Res,
   UploadedFile,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { saveUploadedFile } from 'helper/saveUploadedFile';
+import { saveProductPhoto } from 'helper/saveUploadedFile';
 import { ProductDTO } from './dto/product.dto';
 import { ProductService } from './product.service';
 
@@ -21,7 +22,7 @@ export class ProductController {
   constructor(private productService: ProductService) {}
   // CRUD
   @Post('/create')
-  @UseInterceptors(FileInterceptor('Photo', saveUploadedFile))
+  @UseInterceptors(FileInterceptor('Photo', saveProductPhoto))
   create(@Body(ValidationPipe) productDto: ProductDTO, @UploadedFile() file: Express.Multer.File) {
     if (!file) {
       productDto.Photo = null;
@@ -40,7 +41,7 @@ export class ProductController {
     return this.productService.getByUuid(uuid);
   }
   @Put('/update/:uuid')
-  @UseInterceptors(FileInterceptor('Photo', saveUploadedFile))
+  @UseInterceptors(FileInterceptor('Photo', saveProductPhoto))
   update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body(ValidationPipe) productDto: ProductDTO,
@@ -56,5 +57,10 @@ export class ProductController {
   @Delete('/delete/:uuid')
   delete(@Param('uuid', ParseUUIDPipe) uuid: string) {
     this.productService.delete(uuid);
+  }
+  // Get Photo
+  @Get('/photo/:filename')
+  getImage(@Param('filename') filename, @Res() res) {
+    res.sendFile(filename, { root: './uploads/product-photo' });
   }
 }
