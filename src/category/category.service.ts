@@ -23,4 +23,11 @@ export class CategoryService {
   async delete(id: number) {
     return await this.categoryRepo.delete(id);
   }
+  // Get info Category: {products} - Nested relations
+  async getWithProducts(id: number) {
+    return await this.categoryRepo.findOne({
+      where: { Id: id },
+      relations: ['products'],
+    });
+  }
 }

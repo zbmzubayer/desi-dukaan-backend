@@ -33,6 +33,7 @@ export class OrderService {
     return await this.orderRepo.find({
       relations: {
         customer: true,
+        payment: true,
         orderDetails: {
           product: true,
         },
@@ -53,7 +54,7 @@ export class OrderService {
     await this.orderDetailRepo.delete({ order: id });
     return await this.orderRepo.delete({ Id: id });
   }
-  // Get Order: {customer, payment, orderDetails: {product}} by Code
+  // Get Order: {customer, payment, orderDetails: {product}} by Code - Nested relations
   async getAllInfoByCode(code: string) {
     return await this.orderRepo.findOne({
       where: { Code: code },

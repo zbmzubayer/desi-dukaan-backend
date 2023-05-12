@@ -31,7 +31,7 @@ export class OrderController {
   delete(@Param('id', ParseIntPipe) id: number) {
     this.orderService.delete(id);
   }
-  // Get Order: {customer, payment, orderDetails: {product}} by Code
+  // Get Order: {customer, payment, orderDetails: {product}} by Code - Nested relations
   @Get('/:code/all')
   getAllInfoByCode(@Param('code') code: string) {
     return this.orderService.getAllInfoByCode(code);

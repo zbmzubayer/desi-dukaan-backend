@@ -26,4 +26,9 @@ export class CategoryController {
   delete(@Param('id', ParseIntPipe) id: number) {
     this.categoryService.delete(id);
   }
+  // Get info Category: {products} - Nested relations
+  @Get('/:id/products')
+  getWithProducts(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.getWithProducts(id);
+  }
 }

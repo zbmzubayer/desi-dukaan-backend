@@ -25,10 +25,15 @@ export class CustomerService {
     return customer;
   }
   async getAll() {
-    return await this.customerRepo.find();
+    return await this.customerRepo.find({
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+    });
   }
   async getByUuid(uuid: string) {
-    return await this.customerRepo.findOneBy({ Uuid: uuid });
+    return await this.customerRepo.findOne({
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      where: { Uuid: uuid },
+    });
   }
   async update(uuid: string, customerDto: UpdateCustomerDTO) {
     customerDto.ModifiedAt = new Date();
@@ -36,5 +41,29 @@ export class CustomerService {
   }
   async delete(uuid: string) {
     return await this.customerRepo.delete({ Uuid: uuid });
+  }
+  // Get info Customer: {orders: {orderDetails: {product}}} - Nested relations
+  async getWithOrders(uuid: string) {
+    return await this.customerRepo.findOne({
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      where: { Uuid: uuid },
+      relations: ['orders', 'orders.orderDetails', 'orders.orderDetails.product'],
+    });
+  }
+  // Get info Customer: {Reviews: {product}} - Nested relations
+  async getWithReviews(uuid: string) {
+    return await this.customerRepo.findOne({
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      where: { Uuid: uuid },
+      relations: ['reviews', 'reviews.product'],
+    });
+  }
+  // Get info Customer: {customerPayments: {payment}} - Nested relations
+  async getWithCustomerPayment(uuid: string) {
+    return await this.customerRepo.findOne({
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      where: { Uuid: uuid },
+      relations: ['customerPayments', 'customerPayments.payment'],
+    });
   }
 }

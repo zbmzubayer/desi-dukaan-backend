@@ -60,4 +60,19 @@ export class SellerController {
   getImage(@Param('filename') filename, @Res() res) {
     res.sendFile(filename, { root: './uploads/seller-photo' });
   }
+  // Get all info Seller: {products} - Nested relations
+  @Get('/all/info')
+  getAllInfo() {
+    return this.sellerService.getAllInfo();
+  }
+  // Get info Seller: {products} By Uuid - Nested relations
+  @Get('/:uuid/products')
+  getWithProducts(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.sellerService.getWithProducts(uuid);
+  }
+  // Get all info Seller: {products: category, {orderDetails: {order: {customer}}}, reviews} - Nested relations
+  @Get('/:uuid/all')
+  getAllInfoByUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.sellerService.getAllInfoByUuid(uuid);
+  }
 }

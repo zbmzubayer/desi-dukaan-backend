@@ -63,4 +63,14 @@ export class ProductController {
   getImage(@Param('filename') filename, @Res() res) {
     res.sendFile(filename, { root: './uploads/product-photo' });
   }
+  // Get all info Product: {category, seller}
+  @Get('/all/info')
+  getAllInfo() {
+    return this.productService.getAllInfo();
+  }
+  // Get all info Product: {category, seller} by Uuid
+  @Get('/:uuid/all')
+  getAllInfoByUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.productService.getAllInfoByUuid(uuid);
+  }
 }

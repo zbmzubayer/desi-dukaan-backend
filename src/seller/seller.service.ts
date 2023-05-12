@@ -35,4 +35,32 @@ export class SellerService {
   async delete(uuid: string) {
     return await this.sellerRepo.delete({ Uuid: uuid });
   }
+  // Get all info Seller: {products} - Nested relations
+  async getAllInfo() {
+    return await this.sellerRepo.find({
+      relations: ['products'],
+    });
+  }
+  // Get info Seller: {products} - Nested relations
+  async getWithProducts(uuid: string) {
+    return await this.sellerRepo.findOne({
+      where: { Uuid: uuid },
+      relations: ['products'],
+    });
+  }
+  // Get all info Seller: {products: category, {orderDetails: {order: {customer}}}, reviews} - Nested relations
+  async getAllInfoByUuid(uuid: string) {
+    return await this.sellerRepo.findOne({
+      where: { Uuid: uuid },
+      relations: [
+        'products',
+        'products.category',
+        'products.orderDetails',
+        'products.orderDetails.order',
+        'products.orderDetails.order.customer',
+        'products.orderDetails.order.payment',
+        'products.reviews',
+      ],
+    });
+  }
 }

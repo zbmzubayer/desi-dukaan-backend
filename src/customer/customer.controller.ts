@@ -58,4 +58,19 @@ export class CustomerController {
   getImage(@Param('filename') filename, @Res() res) {
     res.sendFile(filename, { root: './uploads/customer-photo' });
   }
+  // Get info Customer: {orders: {orderDetails: {product}}} - Nested relations
+  @Get('/:uuid/orders')
+  getWithOrders(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.customerService.getWithOrders(uuid);
+  }
+  // Get info Customer: {Reviews: {product}} - Nested relations
+  @Get('/:uuid/reviews')
+  getWithReviews(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.customerService.getWithReviews(uuid);
+  }
+  // Get info Customer: {Reviews: {product}} - Nested relations
+  @Get('/:uuid/customer-payments')
+  getWithCustomerPayment(@Param('uuid', ParseUUIDPipe) uuid: string) {
+    return this.customerService.getWithCustomerPayment(uuid);
+  }
 }
