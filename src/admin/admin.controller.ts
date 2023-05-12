@@ -13,7 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { saveUploadedFile } from 'helper/saveUploadedFile';
+import { saveAdminPhoto } from 'helper/saveUploadedFile';
 import { AdminService } from './admin.service';
 import { CreateAdminDTO } from './dto/create-admin.dto';
 import { UpdateAdminDTO } from './dto/update-admin.dto';
@@ -35,7 +35,7 @@ export class AdminController {
     return this.adminService.getByUuid(uuid);
   }
   @Put('/update/:uuid')
-  @UseInterceptors(FileInterceptor('Photo', saveUploadedFile))
+  @UseInterceptors(FileInterceptor('Photo', saveAdminPhoto))
   update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body(ValidationPipe) adminDto: UpdateAdminDTO,
@@ -56,6 +56,6 @@ export class AdminController {
   // Get Photo
   @Get('/photo/:filename')
   getImage(@Param('filename') filename, @Res() res) {
-    res.sendFile(filename, { root: './uploads' });
+    res.sendFile(filename, { root: './uploads/admin-photo' });
   }
 }

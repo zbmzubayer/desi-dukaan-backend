@@ -13,7 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { saveUploadedFile } from 'helper/saveUploadedFile';
+import { saveCustomerPhoto } from 'helper/saveUploadedFile';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDTO } from './dto/create-customer.dto';
 import { UpdateCustomerDTO } from './dto/update-customer.dto';
@@ -35,7 +35,7 @@ export class CustomerController {
     return this.customerService.getByUuid(uuid);
   }
   @Put('/update/:uuid')
-  @UseInterceptors(FileInterceptor('Photo', saveUploadedFile))
+  @UseInterceptors(FileInterceptor('Photo', saveCustomerPhoto))
   update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body(ValidationPipe) customerDto: UpdateCustomerDTO,
@@ -56,6 +56,6 @@ export class CustomerController {
   // Get Photo
   @Get('/photo/:filename')
   getImage(@Param('filename') filename, @Res() res) {
-    res.sendFile(filename, { root: './uploads' });
+    res.sendFile(filename, { root: './uploads/customer-photo' });
   }
 }

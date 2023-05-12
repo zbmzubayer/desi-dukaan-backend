@@ -58,6 +58,6 @@ export class SellerController {
   // Get Photo
   @Get('/photo/:filename')
   getImage(@Param('filename') filename, @Res() res) {
-    res.sendFile(filename, { root: './uploads' });
+    res.sendFile(filename, { root: './uploads/seller-photo' });
   }
 }
