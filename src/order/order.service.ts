@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order } from 'src/db/entities/order.entity';
 import { OrderDetail } from 'src/db/entities/orderDetail.entity';
+import { EmailService } from 'src/email/email.service';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -9,6 +10,7 @@ export class OrderService {
   constructor(
     @InjectRepository(Order) private orderRepo: Repository<Order>,
     @InjectRepository(OrderDetail) private orderDetailRepo: Repository<OrderDetail>,
+    private emailService: EmailService,
   ) {}
   // CRUD
   async create(orderDto) {
@@ -22,7 +24,10 @@ export class OrderService {
       order.Amount += orderDetail.Price * orderDetail.Qty;
       await this.orderDetailRepo.save(orderDetail);
     });
-    return await this.orderRepo.save(order);
+    const mainOrder = await this.orderRepo.save(order);
+    const orderAllInfo = await this.getAllInfoByCode(mainOrder.Code);
+    this.emailService.sendOnOrder(orderAllInfo.customer, orderAllInfo);
+    return mainOrder;
   }
   async getAll() {
     return await this.orderRepo.find({
@@ -50,7 +55,7 @@ export class OrderService {
   }
   // Get Order: {customer, payment, orderDetails: {product}} by Code
   async getAllInfoByCode(code: string) {
-    return await this.orderRepo.find({
+    return await this.orderRepo.findOne({
       where: { Code: code },
       relations: {
         customer: true,
