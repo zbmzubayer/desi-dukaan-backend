@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Admin } from 'src/db/entities/admin.entity';
 import { EmailService } from 'src/email/email.service';
 import { Repository } from 'typeorm';
+import { AdminChangePasswordDTO } from './dto/change-password-admin.dto';
 import { CreateAdminDTO } from './dto/create-admin.dto';
 import { UpdateAdminDTO } from './dto/update-admin.dto';
 
@@ -33,5 +34,19 @@ export class AdminService {
   }
   async delete(uuid: string) {
     return await this.adminRepo.delete({ Uuid: uuid });
+  }
+  // Change Password
+  async changePassword(uuid: string, changePasswordDto: AdminChangePasswordDTO) {
+    const dbPassword = (await this.adminRepo.findOneBy({ Uuid: uuid })).Password;
+    const isMatch = await bcrypt.compare(changePasswordDto.CurrentPassword, dbPassword);
+    if (isMatch) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(changePasswordDto.NewPassword, salt);
+      changePasswordDto.NewPassword = hashedPassword;
+      await this.adminRepo.update({ Uuid: uuid }, { Password: changePasswordDto.NewPassword });
+      return true;
+    } else {
+      return false;
+    }
   }
 }

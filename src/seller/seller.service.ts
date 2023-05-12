@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Seller } from 'src/db/entities/seller.entity';
 import { EmailService } from 'src/email/email.service';
 import { Repository } from 'typeorm';
+import { SellerChangePasswordDTO } from './dto/change-password-seller.dto';
 import { CreateSellerDTO } from './dto/create-seller.dto';
 import { UpdateSellerDTO } from './dto/update-seller.dto';
 
@@ -62,5 +63,19 @@ export class SellerService {
         'products.reviews',
       ],
     });
+  }
+  // Change Password
+  async changePassword(uuid: string, changePasswordDto: SellerChangePasswordDTO) {
+    const dbPassword = (await this.sellerRepo.findOneBy({ Uuid: uuid })).Password;
+    const isMatch = await bcrypt.compare(changePasswordDto.CurrentPassword, dbPassword);
+    if (isMatch) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(changePasswordDto.NewPassword, salt);
+      changePasswordDto.NewPassword = hashedPassword;
+      await this.sellerRepo.update({ Uuid: uuid }, { Password: changePasswordDto.NewPassword });
+      return true;
+    } else {
+      return false;
+    }
   }
 }

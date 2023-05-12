@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Put,
   Res,
@@ -15,6 +16,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { saveCustomerPhoto } from 'helper/saveUploadedFile';
 import { CustomerService } from './customer.service';
+import { CustomerChangePasswordDTO } from './dto/change-password-customer.dto';
 import { CreateCustomerDTO } from './dto/create-customer.dto';
 import { UpdateCustomerDTO } from './dto/update-customer.dto';
 
@@ -72,5 +74,13 @@ export class CustomerController {
   @Get('/:uuid/customer-payments')
   getWithCustomerPayment(@Param('uuid', ParseUUIDPipe) uuid: string) {
     return this.customerService.getWithCustomerPayment(uuid);
+  }
+  // Change Password
+  @Patch('/change-password/:uuid')
+  changePassword(
+    @Param('uuid', ParseUUIDPipe) uuid: string,
+    @Body(ValidationPipe) changePasswordDto: CustomerChangePasswordDTO,
+  ) {
+    return this.customerService.changePassword(uuid, changePasswordDto);
   }
 }

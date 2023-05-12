@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Put,
   Res,
@@ -14,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { saveUploadedFile } from 'helper/saveUploadedFile';
+import { SellerChangePasswordDTO } from './dto/change-password-seller.dto';
 import { CreateSellerDTO } from './dto/create-seller.dto';
 import { UpdateSellerDTO } from './dto/update-seller.dto';
 import { SellerService } from './seller.service';
@@ -74,5 +76,13 @@ export class SellerController {
   @Get('/:uuid/all')
   getAllInfoByUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
     return this.sellerService.getAllInfoByUuid(uuid);
+  }
+  // Change Password
+  @Patch('/change-password/:uuid')
+  changePassword(
+    @Param('uuid', ParseUUIDPipe) uuid: string,
+    @Body(ValidationPipe) changePasswordDto: SellerChangePasswordDTO,
+  ) {
+    return this.sellerService.changePassword(uuid, changePasswordDto);
   }
 }

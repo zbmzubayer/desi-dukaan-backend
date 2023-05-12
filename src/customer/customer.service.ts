@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { Customer } from 'src/db/entities/customer.entity';
 import { EmailService } from 'src/email/email.service';
 import { Repository } from 'typeorm';
+import { CustomerChangePasswordDTO } from './dto/change-password-customer.dto';
 import { CreateCustomerDTO } from './dto/create-customer.dto';
 import { UpdateCustomerDTO } from './dto/update-customer.dto';
 
@@ -65,5 +66,19 @@ export class CustomerService {
       where: { Uuid: uuid },
       relations: ['customerPayments', 'customerPayments.payment'],
     });
+  }
+  // Change Password
+  async changePassword(uuid: string, changePasswordDto: CustomerChangePasswordDTO) {
+    const dbPassword = (await this.customerRepo.findOneBy({ Uuid: uuid })).Password;
+    const isMatch = await bcrypt.compare(changePasswordDto.CurrentPassword, dbPassword);
+    if (isMatch) {
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(changePasswordDto.NewPassword, salt);
+      changePasswordDto.NewPassword = hashedPassword;
+      await this.customerRepo.update({ Uuid: uuid }, { Password: changePasswordDto.NewPassword });
+      return true;
+    } else {
+      return false;
+    }
   }
 }
