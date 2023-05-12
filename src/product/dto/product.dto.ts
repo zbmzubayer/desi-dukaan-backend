@@ -1,6 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 
 export class ProductDTO {
+  Photo: string;
   @IsNotEmpty()
   Name: string;
   @IsNotEmpty()
