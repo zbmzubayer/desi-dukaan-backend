@@ -8,11 +8,11 @@ import {
   Post,
   Put,
   Res,
-  UploadedFile,
+  UploadedFiles,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { saveUploadedFile } from 'helper/saveUploadedFile';
 import { CreateSellerDTO } from './dto/create-seller.dto';
 import { UpdateSellerDTO } from './dto/update-seller.dto';
@@ -35,17 +35,19 @@ export class SellerController {
     return this.sellerService.getByUuid(uuid);
   }
   @Put('/update/:uuid')
-  @UseInterceptors(FileInterceptor('Photo', saveUploadedFile))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'Photo' }, { name: 'CompanyLogo' }], saveUploadedFile))
   update(
     @Param('uuid', ParseUUIDPipe) uuid: string,
     @Body(ValidationPipe) sellerDto: UpdateSellerDTO,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles() files: { Photo?: Express.Multer.File[]; CompanyLogo?: Express.Multer.File[] },
   ) {
-    if (!file) {
+    if (!files) {
       sellerDto.Photo = null;
       return this.sellerService.update(uuid, sellerDto);
     } else {
-      sellerDto.Photo = file.filename;
+      console.log(files);
+      sellerDto.Photo = files.Photo[0].filename;
+      sellerDto.CompanyLogo = files.CompanyLogo[0].filename;
       return this.sellerService.update(uuid, sellerDto);
     }
   }
