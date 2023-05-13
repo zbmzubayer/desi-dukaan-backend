@@ -26,17 +26,17 @@ export class ProductService {
   async delete(uuid: string) {
     return await this.productRepo.delete({ Uuid: uuid });
   }
-  // Get all info Product: {category, seller} - Nested relations
+  // Get all info Product: {category, seller, reviews} - Nested relations
   async getAllInfo() {
     return await this.productRepo.find({
-      relations: ['category', 'seller'],
+      relations: ['category', 'seller', 'reviews'],
     });
   }
-  // Get all info Product: {category, seller} by Uuid - Nested relations
+  // Get all info Product: {category, seller, reviews} by Uuid - Nested relations
   async getAllInfoByUuid(uuid: string) {
     return await this.productRepo.findOne({
       where: { Uuid: uuid },
-      relations: ['category', 'seller'],
+      relations: ['category', 'seller', 'reviews'],
     });
   }
 }
