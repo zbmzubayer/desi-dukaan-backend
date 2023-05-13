@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Admin } from 'src/db/entities/admin.entity';
@@ -13,6 +13,10 @@ export class AdminService {
   constructor(@InjectRepository(Admin) private adminRepo: Repository<Admin>, private emailService: EmailService) {}
   // CRUD
   async create(adminDto: CreateAdminDTO) {
+    const dbUser = await this.adminRepo.findOneBy({ Email: adminDto.Email });
+    if (dbUser) {
+      throw new BadRequestException('Email already exists');
+    }
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(adminDto.Password, salt);
     adminDto.Password = hashedPassword;

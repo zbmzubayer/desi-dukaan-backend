@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Seller } from 'src/db/entities/seller.entity';
@@ -13,6 +13,10 @@ export class SellerService {
   constructor(@InjectRepository(Seller) private sellerRepo: Repository<Seller>, private emailService: EmailService) {}
   // CRUD
   async create(sellerDto: CreateSellerDTO) {
+    const dbUser = await this.sellerRepo.findOneBy({ Email: sellerDto.Email });
+    if (dbUser) {
+      throw new BadRequestException('Email already exists');
+    }
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(sellerDto.Password, salt);
     sellerDto.Password = hashedPassword;
