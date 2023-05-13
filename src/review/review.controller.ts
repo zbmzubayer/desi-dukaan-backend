@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Validati
 import { ReviewDTO } from './dto/review.dto';
 import { ReviewService } from './review.service';
 
-@Controller('review')
+@Controller('api/review')
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
   // CRUD
