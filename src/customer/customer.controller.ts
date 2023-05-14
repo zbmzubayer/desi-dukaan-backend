@@ -77,10 +77,12 @@ export class CustomerController {
   }
   // Change Password
   @Patch('/change-password/:uuid')
-  changePassword(
-    @Param('uuid', ParseUUIDPipe) uuid: string,
-    @Body(ValidationPipe) changePasswordDto: CustomerChangePasswordDTO,
-  ) {
+  changePassword(@Param('uuid') uuid: string, @Body(ValidationPipe) changePasswordDto: CustomerChangePasswordDTO) {
     return this.customerService.changePassword(uuid, changePasswordDto);
+  }
+  // Get By Email
+  @Get('/email/:email')
+  getByEmail(@Param('email') email: string) {
+    return this.customerService.getByEmail(email);
   }
 }

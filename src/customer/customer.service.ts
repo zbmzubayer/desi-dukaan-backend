@@ -31,12 +31,12 @@ export class CustomerService {
   }
   async getAll() {
     return await this.customerRepo.find({
-      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Dob', 'Gender', 'Address', 'CreatedAt', 'ModifiedAt'],
     });
   }
   async getByUuid(uuid: string) {
     return await this.customerRepo.findOne({
-      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Dob', 'Gender', 'Address', 'CreatedAt', 'ModifiedAt'],
       where: { Uuid: uuid },
     });
   }
@@ -50,7 +50,7 @@ export class CustomerService {
   // Get info Customer: {orders: {orderDetails: {product}}} - Nested relations
   async getWithOrders(uuid: string) {
     return await this.customerRepo.findOne({
-      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Dob', 'Gender', 'Address', 'CreatedAt', 'ModifiedAt'],
       where: { Uuid: uuid },
       relations: ['orders', 'orders.orderDetails', 'orders.orderDetails.product'],
     });
@@ -58,7 +58,7 @@ export class CustomerService {
   // Get info Customer: {Reviews: {product}} - Nested relations
   async getWithReviews(uuid: string) {
     return await this.customerRepo.findOne({
-      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Dob', 'Gender', 'Address', 'CreatedAt', 'ModifiedAt'],
       where: { Uuid: uuid },
       relations: ['reviews', 'reviews.product'],
     });
@@ -66,7 +66,7 @@ export class CustomerService {
   // Get info Customer: {customerPayments: {payment}} - Nested relations
   async getWithCustomerPayment(uuid: string) {
     return await this.customerRepo.findOne({
-      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Address', 'CreatedAt', 'ModifiedAt'],
+      select: ['Id', 'Uuid', 'Name', 'Email', 'Phone', 'Dob', 'Gender', 'Address', 'CreatedAt', 'ModifiedAt'],
       where: { Uuid: uuid },
       relations: ['customerPayments', 'customerPayments.payment'],
     });
@@ -84,5 +84,9 @@ export class CustomerService {
     } else {
       return false;
     }
+  }
+  // Get By Email
+  async getByEmail(email: string) {
+    return await this.customerRepo.findOneBy({ Email: email });
   }
 }
