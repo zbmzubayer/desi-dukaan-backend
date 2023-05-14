@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/db/entities/product.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { ProductDTO } from './dto/product.dto';
 
 @Injectable()
@@ -37,6 +37,12 @@ export class ProductService {
     return await this.productRepo.findOne({
       where: { Uuid: uuid },
       relations: ['category', 'seller', 'reviews'],
+    });
+  }
+  // Search by name
+  async searchByName(name: string) {
+    return await this.productRepo.find({
+      where: { Name: Like(`%${name}%`) },
     });
   }
 }

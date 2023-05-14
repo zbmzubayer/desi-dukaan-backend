@@ -73,4 +73,9 @@ export class ProductController {
   getAllInfoByUuid(@Param('uuid', ParseUUIDPipe) uuid: string) {
     return this.productService.getAllInfoByUuid(uuid);
   }
+  // Search Product by Name
+  @Get('/search/:name')
+  searchByName(@Param('name') name: string) {
+    return this.productService.searchByName(name);
+  }
 }
