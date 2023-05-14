@@ -30,4 +30,11 @@ export class CategoryService {
       relations: ['products'],
     });
   }
+  // Get info Category: {products} - Nested relations
+  async getWithProductsByName(name: string) {
+    return await this.categoryRepo.findOne({
+      where: { Name: name },
+      relations: ['products'],
+    });
+  }
 }

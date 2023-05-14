@@ -31,4 +31,9 @@ export class CategoryController {
   getWithProducts(@Param('id', ParseIntPipe) id: number) {
     return this.categoryService.getWithProducts(id);
   }
+  // Get info Category: {products} - Nested relations
+  @Get('/name/:name/products')
+  getWithProductsByName(@Param('name') name: string) {
+    return this.categoryService.getWithProductsByName(name);
+  }
 }
